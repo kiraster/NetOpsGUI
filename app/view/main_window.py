@@ -75,7 +75,6 @@ class MainWindow(FluentWindow):
         self.addSubInterface(self.get_port_interface, FIF.IOT, '获取端口信息')
         self.addSubInterface(self.get_diagnosis_interface, FIF.SEND, '导出诊断信息和日志')
         self.addSubInterface(self.centos_sec_interface, FIF.DEVELOPER_TOOLS, 'CentOS/KylinSec安全')
-
         self.navigationInterface.addSeparator()
 
         # add custom widget to bottom

@@ -26,7 +26,7 @@ nornir框架，懂的都懂
    git clone https://github.com/kiraster/NetOpsGUI.git
    ```
 
-1. 创建虚拟环境（没用特定要求要使用conda，如果你愿意可以试试）
+1. 创建虚拟环境（不特定要求要使用conda，其他方式也可如venv）
 
    ```
    conda create -n netopsgui python=3.8 -y
@@ -43,7 +43,7 @@ nornir框架，懂的都懂
 
 4. 运行程序
 
-   切换到已经clone 的项目路径下
+   切换到项目路径下
 
    ```
    python main.py
@@ -55,7 +55,7 @@ nornir框架，懂的都懂
    ImportError: cannot import name 'SettingCardWithoutButton' from 'qfluentwidgets.components.settings.setting_card'
    ```
 
-   由于我修改了源码添加了一个不显示按钮的SettingCard，必会导致以上导入错误，操作方式如下
+   由于我修改了源码添加了一个不显示按钮的SettingCard，必会导致以上导入错误，处理以上错误有如下操作方式
 
    ```
    方式一，
@@ -65,23 +65,17 @@ nornir框架，懂的都懂
    2、修改app/view/setting_interface.py文件136行
    ---原文件 SettingCardWithoutButton
            self.aboutCard = SettingCardWithoutButton(
-               self.tr('Check update'),
-               FIF.INFO,
-               self.tr('About'),
-               '© ' + self.tr('Copyright') + f" {YEAR}, {AUTHOR}. " +
-               self.tr('Version') + " " + VERSION,
-               self.aboutGroup
-           )
+   
    ---修改为 PrimaryPushSettingCard
-   		self.aboutCard = SettingCardWithoutButton
+   		self.aboutCard = PrimaryPushSettingCard
            
    方式二：
    	按根路径下Note.md文件说明进行修改
    	
    方式三：
-   	将 app\common\SettingCardWithoutButton 目录下的两个文件覆盖 envs\netopsgui\lib\site-packages\qfluentwidgets\components\settings\路径下的相同文件
+   	将 app\common\SettingCardWithoutButton' 目录下的两个文件覆盖 envs\<你的虚拟环境名称>\lib\site-packages\qfluentwidgets\components\settings\路径下的相同文件
    ```
-
+   
 4. 设置目录（默认值为项目根目录所在的盘符下）
 
    - 项目跟路径：暂时用不到，暂时拿来占坑的

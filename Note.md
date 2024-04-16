@@ -4,7 +4,7 @@
 
 ![image-20240414124902616](https://s2.loli.net/2024/04/16/XnzLUbFZxTcG6YI.png)
 
-1. D:\miniconda3\envs\pyqt-fluent\Lib\site-packages\qfluentwidgets\components\settings\setting_card.py，添加代码
+1. \envs\<你的虚拟环境名称>\Lib\site-packages\qfluentwidgets\components\settings\setting_card.py，添加代码
 
    ```
    #  line 268-276
@@ -33,7 +33,7 @@
            )
    ```
 
-3. D:\miniconda3\envs\pyqt-fluent\Lib\site-packages\qfluentwidgets\components\settings\__init__.py，添加导入SettingCardWithoutButton
+3. D:\miniconda3\envs\<你的虚拟环境名称>\Lib\site-packages\qfluentwidgets\components\settings\__init__.py，添加导入SettingCardWithoutButton
 
    ```
    # line 1

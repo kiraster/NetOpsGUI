@@ -7,7 +7,7 @@ __pycache__/
 *.so
 
 # Distribution / packaging
-app/components/nornir/inventory/export/
+app/components/nornir/export/
 app/config/
 .Python
 build/
