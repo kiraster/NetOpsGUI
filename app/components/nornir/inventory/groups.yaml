@@ -1,0 +1,19 @@
+---
+huawei:
+  platform: huawei
+  username: admin
+  password: Cisco123!@#
+  data:
+    display:
+      - display version
+      - dis ip int brief
+
+h3c:
+  platform: huawei
+  username: admin
+  password: Cisco123!@#
+  port: 22
+  data:
+    display:
+      - display version
+      - dis ip int brief

@@ -1,0 +1,10 @@
+---
+sw01:
+  hostname: 192.168.56.21
+  groups:
+    - huawei
+
+router02:
+  hostname: 192.168.56.22
+  groups:
+    - huawei
