@@ -46,4 +46,8 @@
 
 ## sip版本降级
 
+PyQt-Fluent-Widgets 组件默认安装的sip版本过高，运行代码会提示有一个废弃的函数
+
+已在requirements.txt文件中定义，pip安装的时候会安装这个版本
+
 pip install PyQt5-sip==12.12.2
