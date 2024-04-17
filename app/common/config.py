@@ -37,15 +37,19 @@ class Config(QConfig):
     # 添加根目录占位目录
     root_folder = ConfigItem(
         "Folders", "root_folder", "/", FolderValidator())
+
+    # nornir settings
+    num_workers = RangeConfigItem("nornir_setting", "num_workers", 64, RangeValidator(1, 512))
+    logging = ConfigItem("nornir_setting", "logging", True, BoolValidator())
     # nornir.yaml所在目录
     nornir_folder = ConfigItem(
-        "Folders", "nornir_folder", "/", FolderValidator())
-    # inventory目录
-    inventory_folder = ConfigItem(
-        "Folders", "inventory_folder", "/", FolderValidator())
+        "nornir_setting", "nornir_folder", "/", FolderValidator())
     # nornir生成文件目录
     nornir_export_folder = ConfigItem(
-        "Folders", "nornir_export_folder", "/", FolderValidator())
+        "nornir_setting", "nornir_export_folder", "/", FolderValidator())
+    # inventory目录
+    inventory_folder = ConfigItem(
+        "nornir_setting", "inventory_folder", "/", FolderValidator())
 
     # main window
     mica_enabled = ConfigItem("MainWindow", "MicaEnabled", isWin11(), BoolValidator())

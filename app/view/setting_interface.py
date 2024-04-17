@@ -38,13 +38,25 @@ class SettingInterface(ScrollArea):
             cfg.get(cfg.root_folder),
             self.path_set_group
         )
-        # inventory目录
-        self.inventory_folder_card = PushSettingCard(
-            self.tr('选择路径'),
-            FIF.FOLDER,
-            self.tr('inventory路径'),
-            cfg.get(cfg.inventory_folder),
-            self.path_set_group
+
+        # nornir settings
+        self.nornir_setting_group = SettingCardGroup(
+            self.tr("nornir设置"), self.scroll_widget)
+
+        self.nornir_num_workers_card = RangeSettingCard(
+            cfg.num_workers,
+            FIF.ALBUM,
+            self.tr('设置nornir并发执行task任务数'),
+            self.tr('设置合适的并发数，并非越大越好，需综合考虑并发执行产生的影响'),
+            self.nornir_setting_group
+        )
+
+        self.nornir_logging_card = SwitchSettingCard(
+            FIF.UPDATE,
+            self.tr('是否启用nornir日志记录'),
+            self.tr('建议保持开启，日志文件可以记录运行nornir时产生的详细信息'),
+            configItem=cfg.logging,
+            parent=self.nornir_setting_group
         )
 
         # nornir目录
@@ -53,7 +65,7 @@ class SettingInterface(ScrollArea):
             FIF.FOLDER,
             self.tr('nornir路径'),
             cfg.get(cfg.nornir_folder),
-            self.path_set_group
+            self.nornir_setting_group
         )
 
         # nornir生成文件目录
@@ -62,7 +74,16 @@ class SettingInterface(ScrollArea):
             FIF.FOLDER,
             self.tr('nornir生成文件路径'),
             cfg.get(cfg.nornir_export_folder),
-            self.path_set_group
+            self.nornir_setting_group
+        )
+
+        # inventory目录
+        self.inventory_folder_card = PushSettingCard(
+            self.tr('选择路径'),
+            FIF.FOLDER,
+            self.tr('inventory路径'),
+            cfg.get(cfg.inventory_folder),
+            self.nornir_setting_group
         )
 
         # personalization
@@ -168,9 +189,12 @@ class SettingInterface(ScrollArea):
 
         # 添加设置项到组
         self.path_set_group.addSettingCard(self.root_folder_card)
-        self.path_set_group.addSettingCard(self.inventory_folder_card)
-        self.path_set_group.addSettingCard(self.nornir_folder_card)
-        self.path_set_group.addSettingCard(self.nornir_export_folder_card)
+
+        self.nornir_setting_group.addSettingCard(self.nornir_num_workers_card)
+        self.nornir_setting_group.addSettingCard(self.nornir_logging_card)
+        self.nornir_setting_group.addSettingCard(self.nornir_folder_card)
+        self.nornir_setting_group.addSettingCard(self.nornir_export_folder_card)
+        self.nornir_setting_group.addSettingCard(self.inventory_folder_card)
 
         self.personalGroup.addSettingCard(self.mica_card)
         self.personalGroup.addSettingCard(self.themeCard)
@@ -187,6 +211,7 @@ class SettingInterface(ScrollArea):
         self.expand_layout.setSpacing(28)
         self.expand_layout.setContentsMargins(36, 10, 36, 0)
         self.expand_layout.addWidget(self.path_set_group)
+        self.expand_layout.addWidget(self.nornir_setting_group)
         self.expand_layout.addWidget(self.personalGroup)
         self.expand_layout.addWidget(self.aboutGroup)
 

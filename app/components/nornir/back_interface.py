@@ -21,6 +21,9 @@ from ...common.config import cfg
 inventory_path = cfg.get(cfg.inventory_folder)
 nornir_path = cfg.get(cfg.nornir_folder)
 export_path = cfg.get(cfg.nornir_export_folder)
+num_workers = cfg.get(cfg.num_workers)
+is_enabled = cfg.get(cfg.logging)
+
 
 # 检查是否路径存在，不存在则创建
 # if not os.path.isdir(inventory_path):
@@ -42,7 +45,7 @@ class NornirTask(QObject):
             runner={
                 "plugin": "threaded",
                 "options": {
-                    "num_workers": 66,
+                    "num_workers": num_workers,
                 },
             },
             # inventory={
@@ -60,7 +63,7 @@ class NornirTask(QObject):
                 },
             },
             logging={
-                "enabled": True,
+                "enabled": is_enabled,
                 "level": "INFO",
                 "log_file": nornir_path + "/nornir.log"
             },
