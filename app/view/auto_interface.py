@@ -1,7 +1,7 @@
 # coding: utf-8
 from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QWidget, QGraphicsDropShadowEffect
-from qfluentwidgets import FluentIcon
+from qfluentwidgets import FluentIcon, StateToolTip
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QTextEdit, QPushButton
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot
 import threading
@@ -22,6 +22,9 @@ class AutoInterface(Ui_AutoInterfaceForm, QWidget):
 
         self.start_btn.clicked.connect(self.run_nornir_task)  # 绑定按钮点击事件
 
+        # 添加批量操作执行后进度提示条
+        self.state_tooltip = None
+
         # add shadow effect to card
         # self.setShadowEffect(self.paraCard)
         # self.setShadowEffect(self.resCard)
@@ -34,6 +37,11 @@ class AutoInterface(Ui_AutoInterfaceForm, QWidget):
         self.res_show.setPlainText('正在执行nornir任务，可稍后回来查看结果>>>\n')
         self.res2_show.setPlainText('详细信息显示>>>\n')
 
+        # 显示开始进度提示条
+        self.state_tooltip = StateToolTip('正在后台执行任务', '可稍后回来查看结果', self)
+        self.state_tooltip.move(640, 25)
+        self.state_tooltip.show()
+
         # 创建一个新的线程来执行 Nornir 任务
         self.nornir_thread = threading.Thread(target=self._run_nornir_task)
         self.nornir_thread.start()
@@ -43,6 +51,12 @@ class AutoInterface(Ui_AutoInterfaceForm, QWidget):
         nornir_task.output_signal.connect(self.update_text_edit)
         nornir_task.output2_signal.connect(self.update_text2_edit)
         nornir_task.run_task()
+
+        # 显示结束进度提示条
+        self.state_tooltip.setTitle('后台任务已完成')
+        self.state_tooltip.setContent('在下方查看运行结果')
+        self.state_tooltip.setState(True)
+        self.state_tooltip = None
 
     @pyqtSlot(str)
     def update_text_edit(self, text):
