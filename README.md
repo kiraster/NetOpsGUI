@@ -76,7 +76,7 @@ nornir框架，懂的都懂
    	将 app\common\SettingCardWithoutButton' 目录下的两个文件覆盖 envs\<你的虚拟环境名称>\lib\site-packages\qfluentwidgets\components\settings\路径下的相同文件
    ```
    
-4. 设置目录（默认值为项目根目录所在的盘符下）
+6. 设置目录（默认值为项目根目录所在的盘符下）
 
    - 项目跟路径：暂时用不到，暂时拿来占坑的
    - nornir路径：定义为一个模块的形式，目前nornir的接口文件和log日志放置于此
@@ -84,7 +84,7 @@ nornir框架，懂的都懂
    - nornir生成文件路径：定义为存放nornir任务生成的如备份、记录、表格等等
    - 以上路径可随意设置，不强制要求如下图所示
 
-   ![image-20240416172311123](https://s2.loli.net/2024/04/16/rbwAziR9voNEgYD.png)
+   ![image-20240417223311126](https://s2.loli.net/2024/04/17/PyfsRHcZX8wQlg3.png)
 
 5. 目前除`批量操作`接口的`备份`类型外，其他操作被禁用（没编代码）
 
