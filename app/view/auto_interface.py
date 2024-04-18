@@ -12,7 +12,8 @@ from .Ui_AutoInterface import Ui_AutoInterfaceForm
 from ..common.config import cfg
 
 # 获取配置里定义的路径
-inventory_path = cfg.get(cfg.inventory_folder)
+# inventory_path = cfg.get(cfg.inventory_folder)
+inventory_file = cfg.get(cfg.inventory_file)
 nornir_path = cfg.get(cfg.nornir_folder)
 export_path = cfg.get(cfg.nornir_export_folder)
 num_workers = cfg.get(cfg.num_workers)
@@ -54,7 +55,7 @@ class AutoInterface(Ui_AutoInterfaceForm, QWidget):
             inventory={
                 "plugin": "ExcelInventory",
                 "options": {
-                    "excel_file": inventory_path + "/inventory_unprotected.xlsx",
+                    "excel_file": inventory_file,
                 },
             },
             logging={

@@ -5,7 +5,7 @@ from enum import Enum
 from PyQt5.QtCore import QLocale
 from qfluentwidgets import (qconfig, QConfig, ConfigItem, OptionsConfigItem, BoolValidator,
                             OptionsValidator, RangeConfigItem, RangeValidator,
-                            FolderListValidator, Theme, FolderValidator, ConfigSerializer, __version__)
+                            FolderListValidator, Theme, FolderValidator, ConfigSerializer, __version__, FileNameValidator)
 
 
 class Language(Enum):
@@ -48,8 +48,11 @@ class Config(QConfig):
     nornir_export_folder = ConfigItem(
         "nornir_setting", "nornir_export_folder", "/", FolderValidator())
     # inventory目录
-    inventory_folder = ConfigItem(
-        "nornir_setting", "inventory_folder", "/", FolderValidator())
+    # inventory_folder = ConfigItem(
+    #     "nornir_setting", "inventory_folder", "/", FolderValidator())
+    # inventory文件
+    inventory_file = ConfigItem(
+        "nornir_setting", "inventory_file", "/inventory.xlsx", FileNameValidator())
 
     # main window
     mica_enabled = ConfigItem("MainWindow", "MicaEnabled", isWin11(), BoolValidator())

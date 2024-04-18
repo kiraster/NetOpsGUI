@@ -78,11 +78,20 @@ class SettingInterface(ScrollArea):
         )
 
         # inventory目录
-        self.inventory_folder_card = PushSettingCard(
-            self.tr('选择路径'),
+        # self.inventory_folder_card = PushSettingCard(
+        #     self.tr('选择路径'),
+        #     FIF.FOLDER,
+        #     self.tr('inventory路径'),
+        #     cfg.get(cfg.inventory_folder),
+        #     self.nornir_setting_group
+        # )
+
+        # inventory目录
+        self.inventory_file_card = PushSettingCard(
+            self.tr('选择inventory文件'),
             FIF.FOLDER,
-            self.tr('inventory路径'),
-            cfg.get(cfg.inventory_folder),
+            self.tr('inventory文件'),
+            cfg.get(cfg.inventory_file),
             self.nornir_setting_group
         )
 
@@ -194,7 +203,8 @@ class SettingInterface(ScrollArea):
         self.nornir_setting_group.addSettingCard(self.nornir_logging_card)
         self.nornir_setting_group.addSettingCard(self.nornir_folder_card)
         self.nornir_setting_group.addSettingCard(self.nornir_export_folder_card)
-        self.nornir_setting_group.addSettingCard(self.inventory_folder_card)
+        # self.nornir_setting_group.addSettingCard(self.inventory_folder_card)
+        self.nornir_setting_group.addSettingCard(self.inventory_file_card)
 
         self.personalGroup.addSettingCard(self.mica_card)
         self.personalGroup.addSettingCard(self.themeCard)
@@ -235,15 +245,26 @@ class SettingInterface(ScrollArea):
         cfg.set(cfg.root_folder, folder)
         self.root_folder_card.setContent(folder)
 
-    def __on_inventory_folder_card_clicked(self):
+    # def __on_inventory_folder_card_clicked(self):
+    #     """ inventory_folder folder card clicked slot """
+    #     folder = QFileDialog.getExistingDirectory(
+    #         self, self.tr("Choose folder"), "./")
+    #     if not folder or cfg.get(cfg.inventory_folder) == folder:
+    #         return
+    #
+    #     cfg.set(cfg.inventory_folder, folder)
+    #     self.inventory_folder_card.setContent(folder)
+
+    def __on_inventory_file_card_clicked(self):
         """ inventory_folder folder card clicked slot """
-        folder = QFileDialog.getExistingDirectory(
-            self, self.tr("Choose folder"), "./")
-        if not folder or cfg.get(cfg.inventory_folder) == folder:
+        folder = QFileDialog.getOpenFileName(
+            self, self.tr("选择inventory表格文件"), "./")
+        folder = folder[0]
+        if not folder or cfg.get(cfg.inventory_file) == folder:
             return
 
-        cfg.set(cfg.inventory_folder, folder)
-        self.inventory_folder_card.setContent(folder)
+        cfg.set(cfg.inventory_file, folder)
+        self.inventory_file_card.setContent(folder)
 
     def __on_nornir_folder_card_clicked(self):
         """ nornir_yaml_folder folder card clicked slot """
@@ -271,7 +292,8 @@ class SettingInterface(ScrollArea):
 
         # 信号连接到槽
         self.root_folder_card.clicked.connect(self.__on_root_folder_card_clicked)
-        self.inventory_folder_card.clicked.connect(self.__on_inventory_folder_card_clicked)
+        # self.inventory_folder_card.clicked.connect(self.__on_inventory_folder_card_clicked)
+        self.inventory_file_card.clicked.connect(self.__on_inventory_file_card_clicked)
         self.nornir_folder_card.clicked.connect(self.__on_nornir_folder_card_clicked)
         self.nornir_export_folder_card.clicked.connect(self.__on_nornir_export_folder_card_clicked)
 
