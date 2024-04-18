@@ -4,7 +4,7 @@
 
 ![image-20240414124902616](https://s2.loli.net/2024/04/16/XnzLUbFZxTcG6YI.png)
 
-1. \envs\<你的虚拟环境名称>\Lib\site-packages\qfluentwidgets\components\settings\setting_card.py，添加代码
+1. \envs\\<你的虚拟环境名称>\Lib\site-packages\qfluentwidgets\components\settings\setting_card.py，添加代码
 
    ```
    #  line 268-276
@@ -51,3 +51,31 @@ PyQt-Fluent-Widgets 组件默认安装的sip版本过高，运行代码会提示
 已在requirements.txt文件中定义，pip安装的时候会安装这个版本
 
 pip install PyQt5-sip==12.12.2
+
+
+
+### 文件名校验
+
+用于符合原来的代码格式，由于文件对话框选择的文件验证
+
+修改源码 D:\miniconda3\envs\<你的虚拟环境名称>\Lib\site-packages\qfluentwidgets\common\config.py
+
+79 - 92 行
+
+```
+# 修改了源码//////////////////////////////////////////////////////////////////
+class FileNameValidator(ConfigValidator):
+    """ File name validator """
+
+    def validate(self, value):
+        # 不执行任何验证逻辑，直接返回True
+        return True
+
+    def correct(self, value):
+        # 如果文件不存在，则返回默认值
+        if not Path(value).exists():
+            return "/inventory.xlsx"
+        return value
+# 修改了源码//////////////////////////////////////////////////////////////////
+```
+

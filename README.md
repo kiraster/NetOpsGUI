@@ -6,7 +6,7 @@ UI界面使用了 https://github.com/zhiyiYo/PyQt-Fluent-Widgets
 
 后台使用了 https://github.com/nornir-automation/nornir  和其周边
 
-![image-20240416170019645](https://s2.loli.net/2024/04/16/soydUBrjYCe1aI7.png)
+![image-20240419001659458](https://s2.loli.net/2024/04/19/BPQnKmOwRcYp17r.png)
 
 ## 这东西有什么用
 
@@ -76,6 +76,34 @@ nornir框架，懂的都懂
    	将 app\common\SettingCardWithoutButton' 目录下的两个文件覆盖 envs\<你的虚拟环境名称>\lib\site-packages\qfluentwidgets\components\settings\路径下的相同文件
    ```
    
+   ````
+   用于符合原来的代码格式，由于文件对话框选择的文件验证
+   
+   修改源码 D:\miniconda3\envs\<你的虚拟环境名称>\Lib\site-packages\qfluentwidgets\common\config.py
+   
+   79 - 92 行
+   
+   ```
+   # 修改了源码//////////////////////////////////////////////////////////////////
+   class FileNameValidator(ConfigValidator):
+       """ File name validator """
+   
+       def validate(self, value):
+           # 不执行任何验证逻辑，直接返回True
+           return True
+   
+       def correct(self, value):
+           # 如果文件不存在，则返回默认值
+           if not Path(value).exists():
+               return "/inventory.xlsx"
+           return value
+   # 修改了源码//////////////////////////////////////////////////////////////////
+   ```
+   
+   ````
+   
+   
+   
 6. 设置目录（默认值为项目根目录所在的盘符下）
 
    - 项目跟路径：暂时用不到，暂时拿来占坑的
@@ -84,7 +112,7 @@ nornir框架，懂的都懂
    - nornir生成文件路径：定义为存放nornir任务生成的如备份、记录、表格等等
    - 以上路径可随意设置，不强制要求如下图所示
 
-   ![image-20240417223311126](https://s2.loli.net/2024/04/17/PyfsRHcZX8wQlg3.png)
+   ![image-20240419001816146](https://s2.loli.net/2024/04/19/5aQcfxAMN6PdyYT.png)
 
 5. 目前除`批量操作`接口的`备份`类型外，其他操作被禁用（没编代码）
 
