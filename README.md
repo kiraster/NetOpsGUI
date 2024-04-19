@@ -109,7 +109,6 @@ nornir框架，懂的都懂
    - nornir路径：定义为一个模块的形式，目前nornir的接口文件和log日志放置于此
    - nornir生成文件路径：定义为存放nornir任务生成的如备份、记录、表格等等
    - inventory文件：目前使用的是nornir_table_inventory插件，xlsx表格文件
-   - 以上路径可随意设置，不强制要求如下图所示
 
    ![image-20240419003033050](https://s2.loli.net/2024/04/19/Lo4vFlPcyYJ1RwD.png)
 
