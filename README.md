@@ -77,11 +77,11 @@ nornir框架，懂的都懂
    ```
    
    ````
-   用于符合原来的代码格式，由于文件对话框选择的文件验证
+   为了配符合原来的代码格式，用于文件对话框选择的文件验证
    
-   修改源码 D:\miniconda3\envs\<你的虚拟环境名称>\Lib\site-packages\qfluentwidgets\common\config.py
+   修改源码文件 D:\miniconda3\envs\<你的虚拟环境名称>\Lib\site-packages\qfluentwidgets\common\config.py
    
-   79 - 92 行
+   79 - 92 行 添加如下内容
    
    ```
    # 修改了源码//////////////////////////////////////////////////////////////////
@@ -101,12 +101,14 @@ nornir框架，懂的都懂
    ```
    ````
    
-6. 设置目录（默认值为项目根目录所在的盘符下）
+6. 设置项
 
    - 项目跟路径：暂时用不到，暂时拿来占坑的
+   - nornir任务数：默认32
+   - nornir日志记录：默认开启
    - nornir路径：定义为一个模块的形式，目前nornir的接口文件和log日志放置于此
-   - inventory路径：inventory文件放置于此
    - nornir生成文件路径：定义为存放nornir任务生成的如备份、记录、表格等等
+   - inventory文件：目前使用的是nornir_table_inventory插件，xlsx表格文件
    - 以上路径可随意设置，不强制要求如下图所示
 
    ![image-20240419003033050](https://s2.loli.net/2024/04/19/Lo4vFlPcyYJ1RwD.png)
