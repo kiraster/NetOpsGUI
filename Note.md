@@ -52,11 +52,9 @@ PyQt-Fluent-Widgets 组件默认安装的sip版本过高，运行代码会提示
 
 pip install PyQt5-sip==12.12.2
 
-
-
 ### 文件名校验
 
-用于符合原来的代码格式，由于文件对话框选择的文件验证
+为了配合原来的代码格式，用于文件对话框选择的文件验证
 
 修改源码 D:\miniconda3\envs\<你的虚拟环境名称>\Lib\site-packages\qfluentwidgets\common\config.py
 
