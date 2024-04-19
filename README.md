@@ -49,16 +49,18 @@ nornir框架，懂的都懂
    python main.py
    ```
 
-5. 必遇到的错误，详细见Note.md文件
+5. 已知错误和处理
+
+   详细说明见Note.md文件
+   
+   - 由于我修改了源码添加了一个不显示按钮的SettingCard，必会导致以下导入错误，处理操作方式如下
 
    ```
    ImportError: cannot import name 'SettingCardWithoutButton' from 'qfluentwidgets.components.settings.setting_card'
    ```
-
-   由于我修改了源码添加了一个不显示按钮的SettingCard，必会导致以上导入错误，处理以上错误有如下操作方式
-
+   
    ```
-   方式一，
+   方式一、不使用不显示按钮的SettingCard，恢复使用自带的PrimaryPushSettingCard
    1、去掉app/view/setting_interface.py文件第1行引入的SettingCardWithoutButton
    	from qfluentwidgets import (...SettingCardWithoutButton, ....)
    	
@@ -69,18 +71,18 @@ nornir框架，懂的都懂
    ---修改为 PrimaryPushSettingCard
    		self.aboutCard = PrimaryPushSettingCard
            
-   方式二：
+   方式二：自己手搓
    	按根路径下Note.md文件说明进行修改
    	
-   方式三：
+   方式三：快捷复制粘贴
    	将 app\common\SettingCardWithoutButton' 目录下的两个文件覆盖 envs\<你的虚拟环境名称>\lib\site-packages\qfluentwidgets\components\settings\路径下的相同文件
    ```
    
+   - 为了配符合原来的代码格式，用于文件对话框选择的文件验证
+   
+     修改源码文件 D:\miniconda3\envs\<你的虚拟环境名称>\Lib\site-packages\qfluentwidgets\common\config.py
+   
    ````
-   为了配符合原来的代码格式，用于文件对话框选择的文件验证
-   
-   修改源码文件 D:\miniconda3\envs\<你的虚拟环境名称>\Lib\site-packages\qfluentwidgets\common\config.py
-   
    79 - 92 行 添加如下内容
    
    ```
@@ -112,7 +114,7 @@ nornir框架，懂的都懂
 
    ![image-20240419003033050](https://s2.loli.net/2024/04/19/Lo4vFlPcyYJ1RwD.png)
 
-5. 目前除`批量操作`接口的`备份`类型外，其他操作被禁用（没编代码）
+5. 截止到当前（20240419）除`批量操作`接口的`备份`类型外，其他操作被禁用（没编代码）
 
 ## 哪里能获得帮助
 
@@ -159,4 +161,4 @@ https://github.com/jiujing/nornir_table_inventory
 
 作者对使用本程序可能造成的任何损失概不负责，使用者自行承担风险。
 
-> 上面这些酷似官方术语的描述是GPT生成的，事实确实如此。当然了，你能顺着网线找到我，是可以请一包辣条的。
+> 上面这些酷似官方术语的描述由GPT生成，事实也差不多这样。当然，你能顺着网线找到我，可以请一包辣条。
