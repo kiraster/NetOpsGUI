@@ -18,19 +18,9 @@ from ...common.config import cfg
 
 
 # 获取配置里定义的路径
-# inventory_path = cfg.get(cfg.inventory_folder)
-inventory_file = cfg.get(cfg.inventory_file)
-nornir_path = cfg.get(cfg.nornir_folder)
 export_path = cfg.get(cfg.nornir_export_folder)
-num_workers = cfg.get(cfg.num_workers)
-is_enabled = cfg.get(cfg.logging)
-
 
 # 检查是否路径存在，不存在则创建
-# if not os.path.isdir(inventory_path):
-#     os.makedirs(inventory_path)
-# if not os.path.isdir(nornir_path):
-#     os.makedirs(nornir_path)
 if not os.path.isdir(export_path):
     os.makedirs(export_path)
 
@@ -42,40 +32,12 @@ class NornirTask(QObject):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.nr = InitNornir(
-            runner={
-                "plugin": "threaded",
-                "options": {
-                    "num_workers": num_workers,
-                },
-            },
-            # inventory={
-            #     "plugin": "SimpleInventory",
-            #     "options": {
-            #         "host_file": inventory_path + "/hosts.yaml",
-            #         "group_file": inventory_path + "/groups.yaml",
-            #         "defaults_file": inventory_path + "/defaults.yaml"
-            #     },
-            # },
-            inventory={
-                "plugin": "ExcelInventory",
-                "options": {
-                    "excel_file": inventory_file,
-                },
-            },
-            logging={
-                "enabled": is_enabled,
-                "level": "INFO",
-                "log_file": nornir_path + "/nornir.log"
-            },
-        )
-
-# ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @pyqtSlot()
-    def run_task(self):
+    def run_task(self, nr):
+
         # Nornir 任务
-        res = self.nr.run(task=self.my_task)
+        res = nr.run(task=self.my_task)
         res = build_result_string(res)
 
         # 执行完所以子任务后向窗口发送文字
@@ -83,7 +45,7 @@ class NornirTask(QObject):
         # 详细信息待执行完my_task后一次性返回，单独子任务返回，线程导致乱序
         self.output2_signal.emit(res)
 
-        print('run_task>>>DONE')
+        print('\nrun_task>>>DONE\n')
 
     def my_task(self, task):
 
@@ -118,4 +80,4 @@ class NornirTask(QObject):
             e_first_line = task.results[-1].exception.args[0].split("\n")[0]
             # 发送数据显示在窗口
             self.output_signal.emit('设备：{}\tIP地址：{}\t状态：未完成(可能的原因：{})'.format(name, ip, e_first_line))
-            print('my_task>>>DONE-DONE-DONE')
+            print('\nmy_task>>>DONE-DONE-DONE\n')
