@@ -9,104 +9,23 @@ from nornir import InitNornir
 import threading
 from ..components.nornir.back_interface import NornirTask
 from .Ui_AutoInterface import Ui_AutoInterfaceForm
+from nornir.core.filter import F
+from ..common.nr_filter import filter_nornir
 from ..common.config import cfg
 from ..common.nr_init import DataLoadingThread
-
-# # 获取配置里定义的路径
-# # inventory_path = cfg.get(cfg.inventory_folder)
-# inventory_file = cfg.get(cfg.inventory_file)
-# nornir_path = cfg.get(cfg.nornir_folder)
-# export_path = cfg.get(cfg.nornir_export_folder)
-# num_workers = cfg.get(cfg.num_workers)
-# is_enabled = cfg.get(cfg.logging)
-#
-#
-# # 检查是否路径存在，不存在则创建
-# # if not os.path.isdir(inventory_path):
-# #     os.makedirs(inventory_path)
-# # if not os.path.isdir(nornir_path):
-# #     os.makedirs(nornir_path)
-# if not os.path.isdir(export_path):
-#     os.makedirs(export_path)
 
 
 class AutoInterface(Ui_AutoInterfaceForm, QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
+        self.nr = None
         self.setupUi(self)
 
-        # ////////////////////////////////////////////////////////////////////////////////////////////////////
-        # nornir 初始化
-        # self.nr = InitNornir(
-        #     runner={
-        #         "plugin": "threaded",
-        #         "options": {
-        #             "num_workers": num_workers,
-        #         },
-        #     },
-        #     # inventory={
-        #     #     "plugin": "SimpleInventory",
-        #     #     "options": {
-        #     #         "host_file": inventory_path + "/hosts.yaml",
-        #     #         "group_file": inventory_path + "/groups.yaml",
-        #     #         "defaults_file": inventory_path + "/defaults.yaml"
-        #     #     },
-        #     # },
-        #     inventory={
-        #         "plugin": "ExcelInventory",
-        #         "options": {
-        #             "excel_file": inventory_file,
-        #         },
-        #     },
-        #     logging={
-        #         "enabled": is_enabled,
-        #         "level": "INFO",
-        #         "log_file": nornir_path + "/nornir.log"
-        #     },
-        # )
-        # # ////////////////////////////////////////////////////////////////////////////////////////////////////
-        #
-        # # 定义列表接收内容
-        # self.platform_list = []
-        # self.model_list = []
-        # self.area_list = []
-        # hosts = self.nr.inventory.hosts.items()
-        # # print(hosts)
-        # for n, h in hosts:
-        #     # 打印所以platform
-        #     # print(h.platform)
-        #     self.platform_list.append(h.platform)
-        #     self.model_list.append(h.data['model'])
-        #     self.area_list.append(h.data['area'])
-        #
-        # # 去重
-        # self.platform_list = list(set(self.platform_list))
-        # self.model_list = list(set(self.model_list))
-        # self.area_list = list(set(self.area_list))
-
-        # print(self.platform_list)
-        # print(self.model_list)
-        # print(self.area_list)
-
-        # 添加ComboBox 下拉按钮内容，利用以上列表内容 >>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-        # # 数据源下拉按钮
-        # self.data_combobox.setPlaceholderText('数据源-1')
-        # # self.data_combobox.addItems(self.platform_list)
-        # # self.data_combobox.setCurrentIndex(-1)
-        # # 平台下拉按钮
-        # self.platform_combobox.setPlaceholderText('全部')
-        # self.platform_combobox.addItems(self.platform_list)
-        # self.platform_combobox.setCurrentIndex(-1)
-        # # 型号下拉按钮
-        # self.model_combobox.setPlaceholderText('全部')
-        # self.model_combobox.addItems(self.model_list)
-        # self.model_combobox.setCurrentIndex(-1)
-        # # 区域下拉按钮
-        # self.area_combobox.setPlaceholderText('全部')
-        # self.area_combobox.addItems(self.area_list)
-        # self.area_combobox.setCurrentIndex(-1)
+        # 显示开始进度提示条
+        self.nornir_init_tooltip = StateToolTip('nornir正在初始化中', '稍等片刻', self)
+        self.nornir_init_tooltip.move(640, 25)
+        self.nornir_init_tooltip.show()
 
         # 定义列表接收内容
         self.platform_list = []
@@ -115,6 +34,7 @@ class AutoInterface(Ui_AutoInterfaceForm, QWidget):
 
         # 创建数据加载线程并启动
         self.loading_thread = DataLoadingThread()
+        self.loading_thread.nr_initialized.connect(self.handle_initialized_nr)
         self.loading_thread.data_loaded.connect(self.update_ui)
         self.loading_thread.start()
 
@@ -126,7 +46,6 @@ class AutoInterface(Ui_AutoInterfaceForm, QWidget):
 
         # set the icon of button
         self.start_btn.setIcon(FluentIcon.PLAY)
-
         self.start_btn.clicked.connect(self.run_nornir_task)
 
         # 添加批量操作执行后进度提示条
@@ -149,15 +68,25 @@ class AutoInterface(Ui_AutoInterfaceForm, QWidget):
         self.state_tooltip.move(640, 25)
         self.state_tooltip.show()
 
+        # nornir对象过滤
+        ip_value, platform_value, model_value, area_value = self.get_combobox_condition()
+        # print("ip:", ip_value)
+        # print("Platform:", platform_value)
+        # print("Model:", model_value)
+        # print("Area:", area_value)
+        self.new_nr = filter_nornir(self.nr, ip_value, platform_value, model_value, area_value)
+        print(self.new_nr.inventory.hosts)
+
         # 创建一个新的线程来执行 Nornir 任务
-        self.nornir_thread = threading.Thread(target=self._run_nornir_task)
+        self.nornir_thread = threading.Thread(target=self._run_nornir_task, args=(self.new_nr,))
         self.nornir_thread.start()
 
-    def _run_nornir_task(self):
+    def _run_nornir_task(self, nr):
         nornir_task = NornirTask()
         nornir_task.output_signal.connect(self.update_text_edit)
         nornir_task.output2_signal.connect(self.update_text2_edit)
-        nornir_task.run_task()
+        # 传入nornir对象执行对应任务
+        nornir_task.run_task(nr)
 
         # 显示结束进度提示条
         self.state_tooltip.setTitle('后台任务已完成')
@@ -173,6 +102,7 @@ class AutoInterface(Ui_AutoInterfaceForm, QWidget):
     def update_text2_edit(self, text):
         self.res2_show.appendPlainText(text)
 
+    # @pyqtSlot()
     def update_ui(self, platform_list, model_list, area_list):
         # 在主线程中更新界面
         self.platform_list = platform_list
@@ -191,6 +121,36 @@ class AutoInterface(Ui_AutoInterfaceForm, QWidget):
         self.area_combobox.setPlaceholderText('全部')
         self.area_combobox.addItems(self.area_list)
         self.area_combobox.setCurrentIndex(-1)
+
+
+    def get_combobox_condition(self):
+
+        # 获取 ComboBox 的当前值
+        ip_value = self.ip_lineedit.text()
+        platform_value = self.platform_combobox.currentText()
+        model_value = self.model_combobox.currentText()
+        area_value = self.area_combobox.currentText()
+
+        # 检查值是否为空字符串，如果是，则将其设为 None
+        ip_value = None if ip_value == "" else ip_value
+        platform_value = None if platform_value == "" else platform_value
+        model_value = None if model_value == "" else model_value
+        area_value = None if area_value == "" else area_value
+
+        return ip_value, platform_value, model_value, area_value
+
+    # @pyqtSlot()
+    def handle_initialized_nr(self, nr):
+        # 接收初始化完成的 Nornir 对象
+        # print("Nornir initialized:", nr)
+        self.nr = nr
+        # self.res_show.setPlainText('nornir初始化已完成\n')
+
+        # 显示nornir初始化已完成进度提示条
+        self.nornir_init_tooltip.setTitle('nornir初始化已完成')
+        self.nornir_init_tooltip.setContent('GoGoGo')
+        self.nornir_init_tooltip.setState(True)
+        self.nornir_init_tooltip = None
 
     def clear_filter(self):
         # 清空ComboBox
