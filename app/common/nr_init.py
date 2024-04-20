@@ -3,9 +3,12 @@ import os
 from PyQt5.QtCore import QThread, pyqtSignal
 from ..common.config import cfg
 from nornir import InitNornir
+# from nornir.core import InitNornir
+from nornir.core import Nornir
 
 class DataLoadingThread(QThread):
     data_loaded = pyqtSignal(list, list, list)  # 定义信号，用于发送加载完的数据
+    nr_initialized = pyqtSignal(Nornir)  # 定义信号，用于发送初始化完成的 Nornir 对象
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
@@ -60,3 +63,5 @@ class DataLoadingThread(QThread):
 
         # 发送信号，将加载完的数据发送到主线程
         self.data_loaded.emit(platform_list, model_list, area_list)
+        # 发送信号，将初始化完成的 Nornir 对象发送到主线程
+        self.nr_initialized.emit(nr)
