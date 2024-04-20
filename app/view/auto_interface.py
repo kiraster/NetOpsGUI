@@ -63,11 +63,6 @@ class AutoInterface(Ui_AutoInterfaceForm, QWidget):
         self.res_show.setPlainText('正在执行nornir任务，可稍后回来查看结果>>>\n')
         self.res2_show.setPlainText('详细信息显示>>>\n')
 
-        # 显示开始进度提示条
-        self.state_tooltip = StateToolTip('正在后台执行任务', '可稍后回来查看结果', self)
-        self.state_tooltip.move(640, 25)
-        self.state_tooltip.show()
-
         # nornir对象过滤
         ip_value, platform_value, model_value, area_value = self.get_combobox_condition()
         # print("ip:", ip_value)
@@ -76,10 +71,17 @@ class AutoInterface(Ui_AutoInterfaceForm, QWidget):
         # print("Area:", area_value)
         self.new_nr = filter_nornir(self.nr, ip_value, platform_value, model_value, area_value)
         print(self.new_nr.inventory.hosts)
+        if self.new_nr.inventory.hosts:
+            # 显示开始进度提示条
+            self.state_tooltip = StateToolTip('正在后台执行任务', '可稍后回来查看结果', self)
+            self.state_tooltip.move(640, 25)
+            self.state_tooltip.show()
+            # 创建一个新的线程来执行 Nornir 任务
+            self.nornir_thread = threading.Thread(target=self._run_nornir_task, args=(self.new_nr,))
+            self.nornir_thread.start()
+        else:
+            self.res_show.setPlainText('没有符合条件的结果>>>\n')
 
-        # 创建一个新的线程来执行 Nornir 任务
-        self.nornir_thread = threading.Thread(target=self._run_nornir_task, args=(self.new_nr,))
-        self.nornir_thread.start()
 
     def _run_nornir_task(self, nr):
         nornir_task = NornirTask()
