@@ -74,14 +74,23 @@
           </item>
           <item>
            <widget class="ComboBox" name="data_combobox">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>32</height>
+             </size>
+            </property>
             <property name="maximumSize">
              <size>
               <width>144</width>
-              <height>16777215</height>
+              <height>32</height>
              </size>
             </property>
             <property name="text">
-             <string>全部</string>
+             <string>默认</string>
             </property>
            </widget>
           </item>
@@ -133,10 +142,16 @@
             <property name="enabled">
              <bool>true</bool>
             </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>32</height>
+             </size>
+            </property>
             <property name="maximumSize">
              <size>
               <width>144</width>
-              <height>33</height>
+              <height>32</height>
              </size>
             </property>
             <property name="text">
@@ -189,10 +204,16 @@
           </item>
           <item>
            <widget class="ComboBox" name="platform_combobox">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>32</height>
+             </size>
+            </property>
             <property name="maximumSize">
              <size>
               <width>144</width>
-              <height>16777215</height>
+              <height>32</height>
              </size>
             </property>
             <property name="text">
@@ -251,10 +272,16 @@
           </item>
           <item>
            <widget class="ComboBox" name="model_combobox">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>32</height>
+             </size>
+            </property>
             <property name="maximumSize">
              <size>
               <width>144</width>
-              <height>16777215</height>
+              <height>32</height>
              </size>
             </property>
             <property name="text">
@@ -307,10 +334,16 @@
           </item>
           <item>
            <widget class="ComboBox" name="area_combobox">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>32</height>
+             </size>
+            </property>
             <property name="maximumSize">
              <size>
               <width>144</width>
-              <height>16777215</height>
+              <height>32</height>
              </size>
             </property>
             <property name="text">
@@ -657,6 +690,12 @@
        <widget class="QTabWidget" name="tabWidget">
         <property name="enabled">
          <bool>true</bool>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
         </property>
         <property name="font">
          <font>
