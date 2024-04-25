@@ -4,7 +4,7 @@ from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QWidget, QGraphicsDropShadowEffect
 from qfluentwidgets import FluentIcon, StateToolTip, ComboBox
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QTextEdit, QPushButton
-from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot
+from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot, QThread, Qt
 from nornir import InitNornir
 import threading
 from ..components.nornir.back_interface import NornirTask
@@ -19,6 +19,7 @@ class AutoInterface(Ui_AutoInterfaceForm, QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
+        self.nornir_task = None
         self.nr = None
         self.setupUi(self)
 
@@ -70,31 +71,24 @@ class AutoInterface(Ui_AutoInterfaceForm, QWidget):
         # print("Model:", model_value)
         # print("Area:", area_value)
         self.new_nr = filter_nornir(self.nr, ip_value, platform_value, model_value, area_value)
-        print(self.new_nr.inventory.hosts)
+        # print(self.new_nr.inventory.hosts)
         if self.new_nr.inventory.hosts:
             # 显示开始进度提示条
             self.state_tooltip = StateToolTip('正在后台执行任务', '可稍后回来查看结果', self)
             self.state_tooltip.move(640, 25)
             self.state_tooltip.show()
-            # 创建一个新的线程来执行 Nornir 任务
-            self.nornir_thread = threading.Thread(target=self._run_nornir_task, args=(self.new_nr,))
+            # 创建一个新的QThread来执行Nornir 任务
+            self.nornir_thread = QThread()
+            self.nornir_worker = NornirTask(self.new_nr)  # 传递nr对象
+            self.nornir_worker.moveToThread(self.nornir_thread)
+            # 连接信号
+            self.nornir_worker.output_signal.connect(self.update_text_edit)
+            self.nornir_worker.output2_signal.connect(self.update_text2_edit)
+            self.nornir_worker.finished.connect(self.on_nornir_finished)  # 新增槽函数
+            self.nornir_thread.started.connect(self.nornir_worker.run)
             self.nornir_thread.start()
         else:
             self.res_show.setPlainText('没有符合条件的结果>>>\n')
-
-
-    def _run_nornir_task(self, nr):
-        nornir_task = NornirTask()
-        nornir_task.output_signal.connect(self.update_text_edit)
-        nornir_task.output2_signal.connect(self.update_text2_edit)
-        # 传入nornir对象执行对应任务
-        nornir_task.run_task(nr)
-
-        # 显示结束进度提示条
-        self.state_tooltip.setTitle('后台任务已完成')
-        self.state_tooltip.setContent('在下方查看运行结果')
-        self.state_tooltip.setState(True)
-        self.state_tooltip = None
 
     @pyqtSlot(str)
     def update_text_edit(self, text):
@@ -104,8 +98,21 @@ class AutoInterface(Ui_AutoInterfaceForm, QWidget):
     def update_text2_edit(self, text):
         self.res2_show.appendPlainText(text)
 
+    @pyqtSlot()
+    def on_nornir_finished(self):  # 新增槽函数
+
+        self.state_tooltip.setTitle('后台任务已完成')
+        self.state_tooltip.setContent('在下方查看运行结果')
+        self.state_tooltip.setState(True)
+        self.state_tooltip = None
+        self.nornir_thread.quit()
+        self.nornir_thread.wait()
+        self.nornir_thread.deleteLater()
+        self.nornir_thread = None
+
     # @pyqtSlot()
     def update_ui(self, platform_list, model_list, area_list):
+
         # 在主线程中更新界面
         self.platform_list = platform_list
         self.model_list = model_list
@@ -115,15 +122,12 @@ class AutoInterface(Ui_AutoInterfaceForm, QWidget):
         self.platform_combobox.setPlaceholderText('全部')
         self.platform_combobox.addItems(self.platform_list)
         self.platform_combobox.setCurrentIndex(-1)
-
         self.model_combobox.setPlaceholderText('全部')
         self.model_combobox.addItems(self.model_list)
         self.model_combobox.setCurrentIndex(-1)
-
         self.area_combobox.setPlaceholderText('全部')
         self.area_combobox.addItems(self.area_list)
         self.area_combobox.setCurrentIndex(-1)
-
 
     def get_combobox_condition(self):
 
@@ -138,16 +142,15 @@ class AutoInterface(Ui_AutoInterfaceForm, QWidget):
         platform_value = None if platform_value == "" else platform_value
         model_value = None if model_value == "" else model_value
         area_value = None if area_value == "" else area_value
-
         return ip_value, platform_value, model_value, area_value
 
     # @pyqtSlot()
     def handle_initialized_nr(self, nr):
+
         # 接收初始化完成的 Nornir 对象
         # print("Nornir initialized:", nr)
         self.nr = nr
         # self.res_show.setPlainText('nornir初始化已完成\n')
-
         # 显示nornir初始化已完成进度提示条
         self.nornir_init_tooltip.setTitle('nornir初始化已完成')
         self.nornir_init_tooltip.setContent('GoGoGo')
@@ -155,6 +158,7 @@ class AutoInterface(Ui_AutoInterfaceForm, QWidget):
         self.nornir_init_tooltip = None
 
     def clear_filter(self):
+
         # 清空ComboBox
         self.platform_combobox.setCurrentIndex(-1)
         self.model_combobox.setCurrentIndex(-1)

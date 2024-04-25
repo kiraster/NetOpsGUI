@@ -12,6 +12,7 @@ from netmiko.exceptions import NetmikoTimeoutException
 from nornir_utils.plugins.functions import print_result
 from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot
 from datetime import datetime
+from paramiko.ssh_exception import AuthenticationException
 
 from ...common.build_result_string import build_result_string
 from ...common.config import cfg
@@ -24,31 +25,18 @@ export_path = cfg.get(cfg.nornir_export_folder)
 if not os.path.isdir(export_path):
     os.makedirs(export_path)
 
+
 class NornirTask(QObject):
-    # 发送简要结果显示到res_show
+    # 定义信号...
     output_signal = pyqtSignal(str)
-    # 发送详细结果显示到res2_show
     output2_signal = pyqtSignal(str)
+    finished = pyqtSignal()
 
-    def __init__(self, parent=None):
+    def __init__(self, nr, parent=None):
         super().__init__(parent)
+        self.nr = nr
 
-    @pyqtSlot()
-    def run_task(self, nr):
-
-        # Nornir 任务
-        res = nr.run(task=self.my_task)
-        res = build_result_string(res)
-
-        # 执行完所以子任务后向窗口发送文字
-        self.output_signal.emit('\n<<<已完成nornir任务')
-        # 详细信息待执行完my_task后一次性返回，单独子任务返回，线程导致乱序
-        self.output2_signal.emit(res)
-
-        print('\nrun_task>>>DONE\n')
-
-    def my_task(self, task):
-
+    def export_conf(self, task):
         try:
             cmds = task.host.get('display').split(',')
             name = task.host.name
@@ -81,3 +69,23 @@ class NornirTask(QObject):
             # 发送数据显示在窗口
             self.output_signal.emit('设备：{}\tIP地址：{}\t状态：未完成(可能的原因：{})'.format(name, ip, e_first_line))
             print('\nmy_task>>>DONE-DONE-DONE\n')
+
+
+    @pyqtSlot()
+    def run(self):
+
+        # task_desc = 'TASK: Export Configuration Of Device'
+        results = self.nr.run(task=self.export_conf, on_failed=True)
+        # print_result(results)
+        res = build_result_string(results)
+
+        # 执行完所以子任务后向窗口发送文字
+        self.output_signal.emit('\n<<<已完成nornir任务')
+
+        # 详细信息待执行完my_task后一次性返回，单独子任务返回，线程导致乱序
+        self.output2_signal.emit(res)
+
+        # 发结束进度条提示信号
+        self.finished.emit()
+
+
