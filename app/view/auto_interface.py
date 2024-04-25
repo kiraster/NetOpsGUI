@@ -156,6 +156,7 @@ class AutoInterface(Ui_AutoInterfaceForm, QWidget):
         self.nornir_init_tooltip.setContent('GoGoGo')
         self.nornir_init_tooltip.setState(True)
         self.nornir_init_tooltip = None
+        self.start_btn.setEnabled(True)
 
     def clear_filter(self):
 

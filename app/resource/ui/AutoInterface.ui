@@ -574,6 +574,9 @@
          <layout class="QHBoxLayout" name="horizontalLayout_9">
           <item>
            <widget class="PrimaryPushButton" name="start_btn">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
