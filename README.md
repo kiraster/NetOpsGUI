@@ -51,7 +51,7 @@ nornir框架，懂的都懂
 
 5. 已知错误和处理
 
-   详细说明见Note.md文件
+   **详细说明见Note.md文件，代码行数一直再变化，建议使用`Crtl + F` 搜索定位到相关的行**
    
    - 由于我修改了源码添加了一个不显示按钮的SettingCard，必会导致以下导入错误，处理操作方式如下
 
@@ -101,6 +101,9 @@ nornir框架，懂的都懂
            return value
    # 修改了源码//////////////////////////////////////////////////////////////////
    ```
+   app/common/config.py 文件的49 行 添加inventory文件路径
+           "nornir_setting", "inventory_file", "D:\\NetOpsGUI\\app\components\\nornir\\inventory\\inventory_unprotected.xlsx", FileNameValidator())
+   
    ````
    
 6. 设置项
