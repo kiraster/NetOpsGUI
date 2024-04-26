@@ -53,58 +53,45 @@ nornir框架，懂的都懂
 
    **详细说明见Note.md文件，代码行数一直再变化，建议使用`Crtl + F` 搜索定位到相关的行**
    
-   - 由于我修改了源码添加了一个不显示按钮的SettingCard，必会导致以下导入错误，处理操作方式如下
-
-   ```
-   ImportError: cannot import name 'SettingCardWithoutButton' from 'qfluentwidgets.components.settings.setting_card'
-   ```
-   
-   ```
-   方式一、不使用不显示按钮的SettingCard，恢复使用自带的PrimaryPushSettingCard
-   1、去掉app/view/setting_interface.py文件第1行引入的SettingCardWithoutButton
-   	from qfluentwidgets import (...SettingCardWithoutButton, ....)
-   	
-   2、修改app/view/setting_interface.py文件136行
-   ---原文件 SettingCardWithoutButton
-           self.aboutCard = SettingCardWithoutButton(
-   
-   ---修改为 PrimaryPushSettingCard
-   		self.aboutCard = PrimaryPushSettingCard
-           
-   方式二：自己手搓
-   	按根路径下Note.md文件说明进行修改
-   	
-   方式三：快捷复制粘贴
-   	将 app\common\SettingCardWithoutButton' 目录下的两个文件覆盖 envs\<你的虚拟环境名称>\lib\site-packages\qfluentwidgets\components\settings\路径下的相同文件
-   ```
-   
    - 为了配符合原来的代码格式，用于文件对话框选择的文件验证
-   
+
      修改源码文件 D:\miniconda3\envs\<你的虚拟环境名称>\Lib\site-packages\qfluentwidgets\common\config.py
    
-   ````
-   79 - 92 行 添加如下内容
+     ````
+     79 - 92 行 添加如下内容
+     
+     ```
+     # 修改了源码//////////////////////////////////////////////////////////////////
+     class FileNameValidator(ConfigValidator):
+         """ File name validator """
+     
+         def validate(self, value):
+             # 不执行任何验证逻辑，直接返回True
+             return True
+     
+         def correct(self, value):
+             # 如果文件不存在，则返回默认值
+             if not Path(value).exists():
+                 return "/inventory.xlsx"
+             return value
+     # 修改了源码//////////////////////////////////////////////////////////////////
+     ```
+     app/common/config.py 文件的49 行 添加inventory文件路径
+             "nornir_setting", "inventory_file", "D:\\NetOpsGUI\\app\components\\nornir\\inventory\\inventory_unprotected.xlsx", FileNameValidator())
+     
+     ````
    
-   ```
-   # 修改了源码//////////////////////////////////////////////////////////////////
-   class FileNameValidator(ConfigValidator):
-       """ File name validator """
+   - (可选操作)添加不显示按钮的SettingCard
    
-       def validate(self, value):
-           # 不执行任何验证逻辑，直接返回True
-           return True
+     ```
+     方式二：自己手搓
+     	按根路径下Note.md文件说明进行修改
+     	
+     方式三：快捷复制粘贴
+     	将 app\common\SettingCardWithoutButton' 目录下的两个文件覆盖 envs\<你的虚拟环境名称>\lib\site-packages\qfluentwidgets\components\settings\路径下的相同文件
+     ```
    
-       def correct(self, value):
-           # 如果文件不存在，则返回默认值
-           if not Path(value).exists():
-               return "/inventory.xlsx"
-           return value
-   # 修改了源码//////////////////////////////////////////////////////////////////
-   ```
-   app/common/config.py 文件的49 行 添加inventory文件路径
-           "nornir_setting", "inventory_file", "D:\\NetOpsGUI\\app\components\\nornir\\inventory\\inventory_unprotected.xlsx", FileNameValidator())
    
-   ````
    
 6. 设置项
 
