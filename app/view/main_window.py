@@ -19,6 +19,7 @@ from ..common.translator import Translator
 from ..common import resource
 
 from app.view.auto_interface import AutoInterface
+from app.view.table_interface import TableInterface
 
 
 class Widget(QFrame):
@@ -44,10 +45,12 @@ class MainWindow(FluentWindow):
 
         # 创建子接口，替换文字显示
         self.auto_interface = AutoInterface(self)
-        self.device_list_interface = Widget('设备列表接口', self)
-        self.get_port_interface = Widget('获取端口信息接口', self)
-        self.get_diagnosis_interface = Widget('导出诊断信息和日志接口', self)
-        self.centos_sec_interface = Widget('CentOS/KylinSec安全基线检查和加固接口', self)
+        # self.table_interface = TableInterface(self)
+        # self.device_list_interface = Widget('设备列表接口', self)
+        self.device_list_interface = TableInterface(self)
+        # self.get_port_interface = Widget('获取端口信息接口', self)
+        # self.get_diagnosis_interface = Widget('导出诊断信息和日志接口', self)
+        # self.centos_sec_interface = Widget('CentOS/KylinSec安全基线检查和加固接口', self)
 
         self.settingInterface = SettingInterface(self)
 
@@ -72,9 +75,9 @@ class MainWindow(FluentWindow):
         t = Translator()
         self.addSubInterface(self.auto_interface, FIF.ASTERISK, '批量操作')
         self.addSubInterface(self.device_list_interface, FIF.ALIGNMENT, '设备列表')
-        self.addSubInterface(self.get_port_interface, FIF.IOT, '获取端口信息')
-        self.addSubInterface(self.get_diagnosis_interface, FIF.SEND, '导出诊断信息和日志')
-        self.addSubInterface(self.centos_sec_interface, FIF.DEVELOPER_TOOLS, 'CentOS/KylinSec安全')
+        # self.addSubInterface(self.get_port_interface, FIF.IOT, '获取端口信息')
+        # self.addSubInterface(self.get_diagnosis_interface, FIF.SEND, '导出诊断信息和日志')
+        # self.addSubInterface(self.centos_sec_interface, FIF.DEVELOPER_TOOLS, 'CentOS/KylinSec安全')
         self.navigationInterface.addSeparator()
 
         # add custom widget to bottom

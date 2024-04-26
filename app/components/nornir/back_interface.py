@@ -58,7 +58,7 @@ class NornirTask(QObject):
             display_res_write = task.run(task=write_file,
                                          filename=file_path,
                                          content=output)
-            print('my_task>>>DONE')
+            print('export_conf>>>DONE')
             # if display_res_write:
             #     print('write 0kkkk')
 
@@ -68,7 +68,7 @@ class NornirTask(QObject):
             e_first_line = task.results[-1].exception.args[0].split("\n")[0]
             # 发送数据显示在窗口
             self.output_signal.emit('设备：{}\tIP地址：{}\t状态：未完成(可能的原因：{})'.format(name, ip, e_first_line))
-            print('\nmy_task>>>DONE-DONE-DONE\n')
+            print('export_conf>>>DONE-DONE-DONE')
 
 
     @pyqtSlot()

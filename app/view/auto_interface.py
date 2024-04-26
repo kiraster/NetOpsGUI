@@ -39,7 +39,6 @@ class AutoInterface(Ui_AutoInterfaceForm, QWidget):
         self.loading_thread.data_loaded.connect(self.update_ui)
         self.loading_thread.start()
 
-
         # 清空筛选条件
         self.clear_btn.clicked.connect(self.clear_filter)
 
@@ -58,6 +57,8 @@ class AutoInterface(Ui_AutoInterfaceForm, QWidget):
 
     @pyqtSlot()
     def run_nornir_task(self):
+
+        self.new_nr = None
 
         self.res_show.clear()  # 清空文本框
         self.res2_show.clear()  # 清空文本框
