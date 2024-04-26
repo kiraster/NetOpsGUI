@@ -1,7 +1,7 @@
 # coding:utf-8
 from qfluentwidgets import (SettingCardGroup, SwitchSettingCard, FolderListSettingCard,
                             OptionsSettingCard, PushSettingCard,
-                            HyperlinkCard, PrimaryPushSettingCard, SettingCardWithoutButton, ScrollArea,
+                            HyperlinkCard, PrimaryPushSettingCard, ScrollArea,
                             ComboBoxSettingCard, ExpandLayout, Theme, CustomColorSettingCard,
                             setTheme, setThemeColor, RangeSettingCard, isDarkTheme)
 from qfluentwidgets import FluentIcon as FIF
@@ -163,7 +163,7 @@ class SettingInterface(ScrollArea):
             self.aboutGroup
         )
 
-        self.aboutCard = SettingCardWithoutButton(
+        self.aboutCard = PrimaryPushSettingCard(
             self.tr('Check update'),
             FIF.INFO,
             self.tr('About'),
